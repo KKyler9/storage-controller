@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storage-admin-controller-manager
+  namespace: storage-admin-system
+  labels:
+    app.kubernetes.io/name: storage-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: storage-admin
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: storage-admin
+    spec:
+      serviceAccountName: storage-admin-controller-manager
+      containers:
+        - name: manager
+          image: controller:latest
+          command:
+            - /manager
+          args:
+            - --leader-elect
+          env:
+            - name: ROOK_CEPH_PURGE_IMAGE
+              value: rook/ceph:v1.15.0
